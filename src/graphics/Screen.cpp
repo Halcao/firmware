@@ -66,6 +66,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "platform/portduino/PortduinoGlue.h"
 #endif
 
+#if USE_SH1106SPI
+#include <SPI.h>
+// #include "SH1106Spi.h"
+#include "SH1106esp.h"
+#endif
+
 using namespace meshtastic; /** @todo remove */
 
 namespace graphics
@@ -1484,6 +1490,14 @@ Screen::Screen(ScanI2C::DeviceAddress address, meshtastic_Config_DisplayConfig_O
 #elif defined(USE_SSD1306)
     dispdev = new SSD1306Wire(address.address, -1, -1, geometry,
                               (address.port == ScanI2C::I2CPort::WIRE1) ? HW_I2C::I2C_TWO : HW_I2C::I2C_ONE);
+#elif defined(USE_SH1106SPI)
+    SH1106SpiESP* dis = new SH1106SpiESP(OLED_RST, OLED_DC, OLED_CS, geometry);
+    dis->_SPI = new SPIClass(1); 
+
+    dispdev = dis;
+    if (dis->connect()) {
+        LOG_INFO("Turning on screen");
+    }
 #elif defined(ST7735_CS) || defined(ILI9341_DRIVER) || defined(ILI9342_DRIVER) || defined(ST7701_CS) || defined(ST7789_CS) ||    \
     defined(RAK14014) || defined(HX8357_CS)
     dispdev = new TFTDisplay(address.address, -1, -1, geometry,

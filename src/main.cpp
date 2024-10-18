@@ -678,6 +678,12 @@ void setup()
     screen_model = meshtastic_Config_DisplayConfig_OledType_OLED_SH1107; // keep dimension of 128x64
 #endif
 
+#if defined(USE_SH1106SPI)
+    screen_model = meshtastic_Config_DisplayConfig_OledType_OLED_SH1106; // set dimension of 128x64
+    screen_geometry = GEOMETRY_128_64;
+    LOG_INFO("Using SH1106 SPI display, set to 128x64");
+#endif
+
 #if !MESHTASTIC_EXCLUDE_I2C
 #if !defined(ARCH_PORTDUINO) && !defined(ARCH_STM32WL)
     if (acc_info.type != ScanI2C::DeviceType::NONE) {
@@ -811,6 +817,9 @@ void setup()
 #endif
 #endif
 
+#if defined(USE_SH1106SPI)
+    screen->setup();
+#endif
     screen->print("Started...\n");
 
 #ifdef PIN_PWR_DELAY_MS
