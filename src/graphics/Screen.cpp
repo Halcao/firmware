@@ -1469,7 +1469,7 @@ static void drawNodeInfo(OLEDDisplay *display, OLEDDisplayUiState *state, int16_
     screen->drawColumns(display, x, y, fields);
 }
 
-#if defined(ESP_PLATFORM) && defined(USE_ST7789)
+#if defined(ESP_PLATFORM) && (defined(USE_ST7789) || defined(USE_SH1106SPI))
 SPIClass SPI1(HSPI);
 #endif
 
@@ -1491,13 +1491,7 @@ Screen::Screen(ScanI2C::DeviceAddress address, meshtastic_Config_DisplayConfig_O
     dispdev = new SSD1306Wire(address.address, -1, -1, geometry,
                               (address.port == ScanI2C::I2CPort::WIRE1) ? HW_I2C::I2C_TWO : HW_I2C::I2C_ONE);
 #elif defined(USE_SH1106SPI)
-    SH1106SpiESP* dis = new SH1106SpiESP(OLED_RST, OLED_DC, OLED_CS, geometry);
-    dis->_SPI = new SPIClass(1); 
-
-    dispdev = dis;
-    if (dis->connect()) {
-        LOG_INFO("Turning on screen");
-    }
+    dispdev = new SH1106SpiESP(&SPI1, OLED_RST, OLED_DC, OLED_CS, geometry);
 #elif defined(ST7735_CS) || defined(ILI9341_DRIVER) || defined(ILI9342_DRIVER) || defined(ST7701_CS) || defined(ST7789_CS) ||    \
     defined(RAK14014) || defined(HX8357_CS)
     dispdev = new TFTDisplay(address.address, -1, -1, geometry,

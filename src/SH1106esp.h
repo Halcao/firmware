@@ -44,16 +44,18 @@ class SH1106SpiESP : public OLEDDisplay {
   public:
     SPIClass *_SPI;
     /* pass _cs as -1 to indicate "do not use CS pin", for cases where it is hard wired low */
-    SH1106SpiESP(uint8_t _rst, uint8_t _dc, uint8_t _cs, OLEDDISPLAY_GEOMETRY g = GEOMETRY_128_64) {
+    SH1106SpiESP(SPIClass *_SPI, uint8_t _rst, uint8_t _dc, uint8_t _cs, OLEDDISPLAY_GEOMETRY g = GEOMETRY_128_64) {
       setGeometry(g);
 
       this->_rst = _rst;
       this->_dc  = _dc;
       this->_cs  = _cs;
+      this->_SPI = _SPI;
       // SPI3_HOST
       // OLED_SPI_HOST
       // this->_SPI = new SPIClass(SPI3_HOST); 
       LOG_INFO("SH1106SpiESP constructor with RST: %d, DC: %d, CS: %d", _rst, _dc, _cs);
+      connect();
     }
 
     bool connect(){

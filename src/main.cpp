@@ -681,7 +681,6 @@ void setup()
 #if defined(USE_SH1106SPI)
     screen_model = meshtastic_Config_DisplayConfig_OledType_OLED_SH1106; // set dimension of 128x64
     screen_geometry = GEOMETRY_128_64;
-    LOG_INFO("Using SH1106 SPI display, set to 128x64");
 #endif
 
 #if !MESHTASTIC_EXCLUDE_I2C
@@ -728,6 +727,7 @@ void setup()
 #else
     // ESP32
     SPI.begin(LORA_SCK, LORA_MISO, LORA_MOSI, LORA_CS);
+    LOG_DEBUG("spi bus: %d", SPI.bus());
     LOG_DEBUG("SPI.begin(SCK=%d, MISO=%d, MOSI=%d, NSS=%d)", LORA_SCK, LORA_MISO, LORA_MOSI, LORA_CS);
     SPI.setFrequency(4000000);
 #endif

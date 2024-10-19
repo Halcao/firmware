@@ -1,7 +1,9 @@
 #define HAS_WIFI 1
 #define HAS_BLUETOOTH 1
+#define MESHTASTIC_EXCLUDE_GPS 1
 #define HAS_GPS 0
 #define MESHTASTIC_EXCLUDE_ENVIRONMENTAL_SENSOR 1
+#undef ARCH_RP2040
 
 
 // ST7789 TFT LCD
@@ -12,7 +14,8 @@
 #define OLED_CS 14
 #define OLED_DC 13
 #define OLED_RST 12
-#define OLED_SPI_HOST SPI3_HOST
+// 2: SPI_HOST3
+#define OLED_SPI_HOST 1
 
 // #define D5  OLED_SCLK
 // #define D7  OLED_MOSI
@@ -48,27 +51,39 @@
 
 
 // microphone
-// #define ES7210_SCK 47
-// #define ES7210_DIN 14
-// #define ES7210_LRCK 21
-// #define ES7210_MCLK 48
+// #define ES7210_SCK 40
+// #define ES7210_DIN 39
+// #define ES7210_LRCK 38
+// #define ES7210_MCLK -1
 
 // dac / amp
-// #define HAS_I2S
-// #define DAC_I2S_BCK 7
-// #define DAC_I2S_WS 5
-// #define DAC_I2S_DOUT 6
+#define HAS_I2S
+#define DAC_I2S_BCK 17
+#define DAC_I2S_WS 16
+#define DAC_I2S_DOUT 18
+
+#define ENCODER_A 21
+#define ENCODER_B 48
+#define ENCODER_KEY 47
+
+// up: 2: 7
+// left: 3 5
+#define BUTTON_UP 6
+#define BUTTON_DOWN 5
 
 // LoRa
+#define USE_RF95 // RFM95/SX127x
 #define USE_SX1262
 #define USE_SX1268
-
+#define RADIOLIB_EXCLUDE_SX127X 0
 #define LORA_SCK 41
 #define LORA_MISO 42
 #define LORA_MOSI 45
 #define LORA_CS 46
 
 #define LORA_DIO0 15 // a No connect on the SX1262 module
+#define RF95_IRQ LORA_DIO0
+#define RF95_RESET LORA_RESET
 #define LORA_RESET 9
 #define LORA_DIO1 -1 // SX1262 IRQ
 #define LORA_DIO2 -1 // SX1262 BUSY
@@ -79,7 +94,7 @@
 #define SX126X_BUSY LORA_DIO2
 #define SX126X_RESET LORA_RESET
 // Not really an E22 but TTGO seems to be trying to clone that
-#define SX126X_DIO2_AS_RF_SWITCH
-#define SX126X_DIO3_TCXO_VOLTAGE 1.8
+// #define SX126X_DIO2_AS_RF_SWITCH
+// #define SX126X_DIO3_TCXO_VOLTAGE 1.8
 // Internally the TTGO module hooks the SX1262-DIO2 in to control the TX/RX switch (which is the default for the sx1262interface
 // code)
