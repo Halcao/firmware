@@ -12,7 +12,8 @@ int16_t RadioLibRF95::begin(float freq, float bw, uint8_t sf, uint8_t cr, uint8_
 {
     // execute common part
     uint8_t rf95versions[2] = {0x12, 0x11};
-    int16_t state = SX127x::begin(rf95versions, sizeof(rf95versions), syncWord, preambleLength);
+    uint8_t versions[] = { RADIOLIB_SX1278_CHIP_VERSION, RADIOLIB_SX1278_CHIP_VERSION_ALT, RADIOLIB_SX1278_CHIP_VERSION_RFM9X };
+    int16_t state = SX127x::begin(versions, sizeof(versions), syncWord, preambleLength);
     RADIOLIB_ASSERT(state);
 
     // current limit was removed from module' ctor
@@ -33,24 +34,34 @@ int16_t RadioLibRF95::begin(float freq, float bw, uint8_t sf, uint8_t cr, uint8_
     // configure publicly accessible settings
     state = setFrequency(freq);
     RADIOLIB_ASSERT(state);
+    LOG_DEBUG("setFrequency set result %d", state);
 
     state = setBandwidth(bw);
     RADIOLIB_ASSERT(state);
+    LOG_DEBUG("setBandwidth set result %d", state);
 
     state = setSpreadingFactor(sf);
     RADIOLIB_ASSERT(state);
+    LOG_DEBUG("setSpreadingFactor set result %d", state);
 
     state = setCodingRate(cr);
     RADIOLIB_ASSERT(state);
+    LOG_DEBUG("setCodingRate set result %d", state);
 
+    if (power > 17) {
+        LOG_DEBUG("Power set to %d, but max is 17", power);
+        power = 17;
+    }
 #ifdef USE_RF95_RFO
     state = setOutputPower(power, true);
 #else
     state = setOutputPower(power);
 #endif
     RADIOLIB_ASSERT(state);
+    LOG_DEBUG("setOutputPower set result %d", state);
 
     state = setGain(gain);
+    LOG_DEBUG("setGain set result %d", state);
 
     return (state);
 }
